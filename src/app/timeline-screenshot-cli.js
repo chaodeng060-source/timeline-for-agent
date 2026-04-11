@@ -140,6 +140,9 @@ Selection advice:
 You can also pass a custom CSS selector, for example:
   timeline-for-agent screenshot --selector ".pie-chart-shell"
 
+Relevant environment:
+  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN   controls screenshot language and labels
+
 Current selector map:
 ${Object.entries(SCREENSHOT_SELECTOR_MAP)
     .map(([key, value]) => `  - ${key} => ${value}`)

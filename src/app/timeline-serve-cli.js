@@ -41,7 +41,7 @@ Usage: timeline-for-agent serve [--port 4317]
 Serve the built static dashboard without file watching.
 
 Relevant environment:
-  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN
+  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN   controls the served dashboard language
   TIMELINE_FOR_AGENT_PORT=4317
   TIMELINE_FOR_AGENT_SITE_DIR=/absolute/path
 `);

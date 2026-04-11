@@ -41,7 +41,7 @@ Usage: timeline-for-agent dev [--port 4317]
 Start the timeline development server with rebuilds and hot reload.
 
 Relevant environment:
-  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN
+  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN   controls the dev dashboard language
   TIMELINE_FOR_AGENT_PORT=4317
   TIMELINE_FOR_AGENT_STATE_DIR=/absolute/path
 `);

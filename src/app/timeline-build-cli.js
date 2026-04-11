@@ -25,7 +25,7 @@ Usage: timeline-for-agent build
 Build the static timeline dashboard into the configured site directory.
 
 Relevant environment:
-  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN
+  TIMELINE_FOR_AGENT_LOCALE=en|zh-CN   controls the dashboard language
   TIMELINE_FOR_AGENT_STATE_DIR=/absolute/path
   TIMELINE_FOR_AGENT_SITE_DIR=/absolute/path
 `);
