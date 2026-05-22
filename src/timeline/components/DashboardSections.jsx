@@ -327,11 +327,11 @@ function PieLegend({ items, locale }) {
 function renderPieLabel({
   cx,
   cy,
-  fill,
   midAngle,
   outerRadius,
   percent,
   name,
+  payload,
 }) {
   const RADIAN = Math.PI / 180;
   const radius = Number(outerRadius || 0) + 18;
@@ -342,7 +342,7 @@ function renderPieLabel({
     <text
       x={x}
       y={y}
-      fill={`color-mix(in srgb, ${fill || "var(--ink-2)"} 52%, var(--ink))`}
+      fill={payload?.ink || "var(--ink)"}
       fontSize="12"
       fontWeight="500"
       textAnchor={textAnchor}
