@@ -33,9 +33,15 @@
 <a id="preview"></a>
 ## Dashboard 预览
 
-主视图示例：
+桌面主视图示例：
 
-![Timeline Dashboard](./examples/timeline-dashboard-main-view.png)
+![Timeline Dashboard 中文桌面主视图](./examples/screenshot-combos/timeline-dashboard-main-view-zh.png)
+
+移动端视图示例：
+
+| 时间轴 | 分析 | 事件 |
+| --- | --- | --- |
+| ![移动端时间轴视图](./examples/screenshot-combos/timeline-dashboard-mobile-timeline-view.png) | ![移动端分析视图](./examples/screenshot-combos/timeline-dashboard-mobile-analytics-view.png) | ![移动端事件视图](./examples/screenshot-combos/timeline-dashboard-mobile-events-view.png) |
 
 局部筛选示例：
 
@@ -52,6 +58,10 @@ agent 发送截图给用户的示例：
 - `timeline-dashboard-timeline-view.png`
 - `timeline-dashboard-analytics-view.png`
 - `timeline-dashboard-events-view.png`
+- `screenshot-combos/timeline-dashboard-main-view-zh.png`
+- `screenshot-combos/timeline-dashboard-mobile-timeline-view.png`
+- `screenshot-combos/timeline-dashboard-mobile-analytics-view.png`
+- `screenshot-combos/timeline-dashboard-mobile-events-view.png`
 - `screenshot-combos/week-main-default.png`
 - `screenshot-combos/week-analytics-default.png`
 - `screenshot-combos/month-2026-04-work-coding-analytics.png`

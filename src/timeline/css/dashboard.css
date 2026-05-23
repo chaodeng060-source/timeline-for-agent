@@ -267,11 +267,82 @@ input {
   min-width: 0;
 }
 
+.mobile-week-shell {
+  position: relative;
+}
+
+.mobile-week-header {
+  z-index: 4;
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding-left: 42px;
+  margin-top: 2px;
+  background: var(--paper);
+}
+
+.mobile-week-header-spacer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 42px;
+}
+
+.mobile-day-header {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-family: var(--font-sans);
+  text-align: center;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  min-height: 20px;
+  padding: 0 2px;
+}
+
+.mobile-day-header strong {
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mobile-day-header span {
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.mobile-day-header.compact {
+  flex: 0 0 22px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.mobile-day-header.compact span {
+  font-size: 8px;
+  line-height: 1;
+}
+
+.mobile-day-header.compact strong {
+  font-size: 9px;
+  line-height: 1;
+}
+
+.mobile-day-header.active {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-inline: 10px;
+}
+
 .mobile-week-strip {
   display: flex;
   align-items: stretch;
   gap: 4px;
-  min-height: 880px;
+  min-height: 800px;
   position: relative;
   padding-left: 42px;
 }
@@ -279,7 +350,7 @@ input {
 .mobile-time-axis {
   position: absolute;
   left: 0;
-  top: 36px;
+  top: 0;
   bottom: 0;
   width: 38px;
   z-index: 2;
@@ -305,7 +376,7 @@ input {
   position: absolute;
   left: 42px;
   right: 0;
-  top: 36px;
+  top: 0;
   bottom: 0;
   z-index: 0;
   pointer-events: none;
@@ -324,7 +395,7 @@ input {
   display: grid;
   grid-template-rows: 1fr;
   gap: 0;
-  min-height: 680px;
+  min-height: 800px;
   padding: 0 2px;
   border: 0;
   border-radius: 0;
@@ -343,40 +414,11 @@ input {
   padding-inline: 10px;
 }
 
-.mobile-day-column-head {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 3px;
-  color: var(--ink-2);
-  font-size: 10px;
-  line-height: 1.1;
-  pointer-events: none;
-  min-height: 20px;
-}
-
-.mobile-day-column-head strong {
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.mobile-day-column.compact .mobile-day-column-head strong,
-.mobile-day-column.compact .mobile-day-column-head span {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
 .mobile-day-track {
   position: relative;
   min-height: 800px;
   border-radius: 10px;
   background: transparent;
-  margin-top: 26px;
 }
 
 .mobile-day-event {

@@ -33,9 +33,15 @@
 <a id="preview"></a>
 ## Dashboard 预览
 
-主视图示例：
+桌面主视图示例：
 
-![Timeline Dashboard](./examples/timeline-dashboard-main-view.png)
+![Timeline Dashboard 中文桌面主视图](./examples/screenshot-combos/timeline-dashboard-main-view-zh.png)
+
+移动端视图示例：
+
+| 时间轴 | 分析 | 事件 |
+| --- | --- | --- |
+| ![移动端时间轴视图](./examples/screenshot-combos/timeline-dashboard-mobile-timeline-view.png) | ![移动端分析视图](./examples/screenshot-combos/timeline-dashboard-mobile-analytics-view.png) | ![移动端事件视图](./examples/screenshot-combos/timeline-dashboard-mobile-events-view.png) |
 
 局部筛选示例：
 
@@ -52,6 +58,10 @@ agent 发送截图给用户的示例：
 - `timeline-dashboard-timeline-view.png`
 - `timeline-dashboard-analytics-view.png`
 - `timeline-dashboard-events-view.png`
+- `screenshot-combos/timeline-dashboard-main-view-zh.png`
+- `screenshot-combos/timeline-dashboard-mobile-timeline-view.png`
+- `screenshot-combos/timeline-dashboard-mobile-analytics-view.png`
+- `screenshot-combos/timeline-dashboard-mobile-events-view.png`
 - `screenshot-combos/week-main-default.png`
 - `screenshot-combos/week-analytics-default.png`
 - `screenshot-combos/month-2026-04-work-coding-analytics.png`
@@ -137,6 +147,7 @@ CLI 会优先读取这两个 `.env` 位置：
 
 常用环境变量：
 
+- `TIMELINE_FOR_AGENT_LOCALE`
 - `TIMELINE_FOR_AGENT_STATE_DIR`
 - `TIMELINE_FOR_AGENT_DIR`
 - `TIMELINE_FOR_AGENT_PORT`
@@ -145,10 +156,27 @@ CLI 会优先读取这两个 `.env` 位置：
 - `TIMELINE_FOR_AGENT_FACTS_FILE`
 - `TIMELINE_FOR_AGENT_SITE_DIR`
 
+语言切换方式：
+
+```bash
+TIMELINE_FOR_AGENT_LOCALE=zh-CN npm run timeline-serve
+TIMELINE_FOR_AGENT_LOCALE=en npm run timeline-serve
+```
+
+同样也适用于：
+
+```bash
+TIMELINE_FOR_AGENT_LOCALE=zh-CN npm run timeline-dev
+TIMELINE_FOR_AGENT_LOCALE=en npm run timeline-build
+TIMELINE_FOR_AGENT_LOCALE=zh-CN npm run timeline-screenshot -- --selector main
+```
+
 ### 当前数据是怎么来的
 
 - 如果真实 `facts` 非空，dashboard 会直接使用真实数据
-- 如果真实 `facts` 为空，会回退到 [demo-facts.json](./examples/demo-facts.json)
+- 如果真实 `facts` 为空，会按语言回退到 demo 数据
+  - 英文： [demo-facts.json](./examples/demo-facts.json)
+  - 中文： [demo-facts.zh-CN.json](./examples/demo-facts.zh-CN.json)
 - `dev` 模式下修改真实数据文件会自动重建；demo 场景下修改 `examples/demo-facts.json` 也会自动重建
 
 ### 当前分类是怎么来的

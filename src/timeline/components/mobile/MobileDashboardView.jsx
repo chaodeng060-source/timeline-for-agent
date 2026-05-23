@@ -66,13 +66,13 @@ function MobileDashboardView({
           <div className="mobile-range-row">
             <nav className="pill-group mobile-unit-group" aria-label={getTimelineText(locale, "selectTimeRange")}>
               <MobileTabButton active={range === "day"} disabled={activeTab === "timeline"} onClick={() => setRange("day")}>
-                {getTimelineText(locale, "day")}
+                Day
               </MobileTabButton>
               <MobileTabButton active={range === "week"} disabled={activeTab === "timeline"} onClick={() => setRange("week")}>
-                {getTimelineText(locale, "week")}
+                Week
               </MobileTabButton>
               <MobileTabButton active={range === "month"} disabled={activeTab === "timeline"} onClick={() => setRange("month")}>
-                {getTimelineText(locale, "month")}
+                Month
               </MobileTabButton>
             </nav>
             <TimelineRangeSelector
@@ -87,6 +87,9 @@ function MobileDashboardView({
               locale={locale}
             />
           </div>
+          {activeTab === "timeline" && timelineDays.length && activeDayKey ? (
+            <MobileTimelineHeader activeDayKey={activeDayKey} days={timelineDays} onSelectDay={setActiveDayKey} />
+          ) : null}
         </header>
         <div className="mobile-content">
           {activeTab === "timeline" ? (
@@ -136,63 +139,83 @@ function MobileTabButton({ active, children, disabled = false, onClick }) {
   );
 }
 
+function MobileTimelineHeader({ activeDayKey, days, onSelectDay }) {
+  return (
+    <div className="mobile-week-header">
+      <div className="mobile-week-header-spacer" aria-hidden="true" />
+      {days.map((day) => {
+        const isActive = day.date === activeDayKey;
+        return (
+          <button
+            key={`head:${day.date}`}
+            type="button"
+            className={`mobile-day-header ${isActive ? "active" : "compact"}`.trim()}
+            onClick={() => onSelectDay(day.date)}
+          >
+            <span>{day.weekday}</span>
+            <strong>{isActive ? day.label : day.compactDay}</strong>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function MobileTimelineView({ activeDayKey, days, locale, onSelectDay }) {
   const hourTicks = useMemo(() => buildMobileHourTicks(), []);
   return (
     <section className="mobile-stack-section">
       {days.length && activeDayKey ? (
-        <div className="mobile-week-strip">
-          <div className="mobile-time-axis">
-            {hourTicks.map((tick) => (
-              <div key={tick.key} className="mobile-time-tick" style={{ top: `${tick.top}%` }}>
-                <span>{tick.label}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mobile-time-grid" aria-hidden="true">
-            {hourTicks.map((tick) => (
-              <div key={tick.key} className="mobile-time-grid-line" style={{ top: `${tick.top}%` }} />
-            ))}
-          </div>
-          {days.map((day) => {
-            const isActive = day.date === activeDayKey;
-            return (
-              <button
-                key={day.date}
-                type="button"
-                className={`mobile-day-column ${isActive ? "active" : "compact"}`.trim()}
-                onClick={() => onSelectDay(day.date)}
-              >
-                <div className="mobile-day-column-head">
-                  <span>{day.weekday}</span>
-                  <strong>{day.label}</strong>
+        <div className="mobile-week-shell">
+          <div className="mobile-week-strip">
+            <div className="mobile-time-axis">
+              {hourTicks.map((tick) => (
+                <div key={tick.key} className="mobile-time-tick" style={{ top: `${tick.top}%` }}>
+                  <span>{tick.label}</span>
                 </div>
-                <div className="mobile-day-track">
-                  {day.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className={buildMobileDayEventClassName(item.height)}
-                      style={{
-                        "--mobile-item-fill": item.color,
-                        "--mobile-item-ink": item.ink,
-                        top: `${item.top}%`,
-                        height: `${item.height}%`,
-                      }}
-                    >
-                      {isActive ? (
-                        <div className="mobile-day-event-body">
-                          <div className="mobile-day-event-head">
-                            <h2>{item.title}</h2>
+              ))}
+            </div>
+            <div className="mobile-time-grid" aria-hidden="true">
+              {hourTicks.map((tick) => (
+                <div key={tick.key} className="mobile-time-grid-line" style={{ top: `${tick.top}%` }} />
+              ))}
+            </div>
+            {days.map((day) => {
+              const isActive = day.date === activeDayKey;
+              return (
+                <button
+                  key={day.date}
+                  type="button"
+                  className={`mobile-day-column ${isActive ? "active" : "compact"}`.trim()}
+                  onClick={() => onSelectDay(day.date)}
+                >
+                  <div className="mobile-day-track">
+                    {day.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className={buildMobileDayEventClassName(item.height)}
+                        style={{
+                          "--mobile-item-fill": item.color,
+                          "--mobile-item-ink": item.ink,
+                          top: `${item.top}%`,
+                          height: `${item.height}%`,
+                        }}
+                      >
+                        {isActive ? (
+                          <div className="mobile-day-event-body">
+                            <div className="mobile-day-event-head">
+                              <h2>{item.title}</h2>
+                            </div>
+                            <p>{item.timeText}</p>
                           </div>
-                          <p>{item.timeText}</p>
-                        </div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </button>
-            );
-          })}
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       ) : (
         <div className="panel empty-state">{getTimelineText(locale, "noTimeline")}</div>

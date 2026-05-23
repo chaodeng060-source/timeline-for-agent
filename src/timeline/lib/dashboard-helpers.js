@@ -199,7 +199,8 @@ function buildMobileRecentWeekTimeline(data, locale = "en", anchorDate = "") {
     return {
       date,
       label: formatMobileDayLabel(date, resolvedLocale),
-      weekday: formatMobileWeekday(date, resolvedLocale),
+      weekday: formatMobileWeekdayEnglish(date),
+      compactDay: formatMobileDayOfMonth(date),
       items: items
         .map((item) => ({
           id: item.id,
@@ -266,6 +267,20 @@ function formatMobileWeekday(date, locale = "en") {
   return new Intl.DateTimeFormat(locale === "zh-CN" ? "zh-CN" : "en-US", {
     timeZone: "Asia/Shanghai",
     weekday: "short",
+  }).format(Date.parse(`${date}T00:00:00+08:00`));
+}
+
+function formatMobileWeekdayEnglish(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Shanghai",
+    weekday: "short",
+  }).format(Date.parse(`${date}T00:00:00+08:00`));
+}
+
+function formatMobileDayOfMonth(date) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Shanghai",
+    day: "numeric",
   }).format(Date.parse(`${date}T00:00:00+08:00`));
 }
 
