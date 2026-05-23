@@ -35,7 +35,7 @@ function HeaderStats({
   const headlineStats = [
     {
       label: getTimelineText(locale, "lastUpdated"),
-      value: formatDateTime(data?.meta?.updatedAt || data?.meta?.generatedAt, locale),
+      value: formatDateTime(data?.meta?.updatedAt || data?.meta?.generatedAt, locale, data?.meta?.timezone),
     },
     {
       label: getTimelineText(locale, "daysCovered"),

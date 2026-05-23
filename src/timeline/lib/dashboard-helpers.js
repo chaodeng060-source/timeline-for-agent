@@ -3,6 +3,7 @@ import timezoneUtils from "../../infra/timeline/timezone-utils.js";
 
 const {
   anchorClockRangeToReferenceDay,
+  dateKeyTimeToIsoInTimezone,
   formatClockInTimezone,
   formatDateInTimezone,
   formatDayOfMonthInTimezone,
@@ -26,8 +27,8 @@ function buildMonthTimeline(data, monthKey) {
   return {
     key: monthKey,
     label: monthKey,
-    start: `${anchorDate}T00:00:00.000+08:00`,
-    end: `${anchorDate}T23:59:59.999+08:00`,
+    start: dateKeyTimeToIsoInTimezone(anchorDate, "00:00:00", timezone),
+    end: dateKeyTimeToIsoInTimezone(anchorDate, "23:59:59", timezone),
     groups: dates.map((date) => ({
       id: date,
       content: formatMonthGroupLabel(date, timezone, data?.meta?.locale || "en"),
@@ -63,11 +64,7 @@ function formatMonthGroupLabel(date, timezone, locale = "en") {
   return `${date.slice(5)} ${weekday}`;
 }
 
-function formatClockFromIso(value) {
-  return formatClockInTimezone(value, "Asia/Shanghai");
-}
-
-function formatDateTime(value, locale = "en") {
+function formatDateTime(value, locale = "en", timezone = "") {
   if (!value) {
     return getTimelineText(locale, "dateTimeNA");
   }
@@ -76,8 +73,9 @@ function formatDateTime(value, locale = "en") {
     return value;
   }
   const resolvedLocale = resolveTimelineLocale(locale);
-  const dateText = formatDateInTimezone(parsed, "Asia/Shanghai");
-  const clockText = formatClockInTimezone(parsed, "Asia/Shanghai");
+  const resolvedTimezone = resolveTimelineTimezone(timezone);
+  const dateText = formatDateInTimezone(parsed, resolvedTimezone);
+  const clockText = formatClockInTimezone(parsed, resolvedTimezone);
   return `${dateText} ${clockText}`;
 }
 

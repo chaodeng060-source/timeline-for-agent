@@ -2,6 +2,7 @@ const { getTimelineText, localizeTimelineTaxonomy, resolveTimelineLocale } = req
 const { buildCategoryTheme } = require("./category-theme");
 const {
   anchorClockRangeToReferenceDay,
+  dateKeyTimeToIsoInTimezone,
   dateKeyTimeToTimestamp,
   formatClockInTimezone,
   formatDateInTimezone,
@@ -12,7 +13,7 @@ const {
 } = require("./timezone-utils");
 
 let activeLocale = "en";
-let activeTimezone = "Asia/Shanghai";
+let activeTimezone = resolveTimelineTimezone();
 
 function buildTimelineViews(state, metaOverrides = {}, options = {}) {
   activeLocale = resolveTimelineLocale(options.locale || metaOverrides.locale || "en");
@@ -66,8 +67,8 @@ function buildDayTimeline(date, day, categoryMap) {
   const events = Array.isArray(day?.events) ? day.events : [];
   return {
     date,
-    start: new Date(dateKeyTimeToTimestamp(date, "00:00:00", activeTimezone)).toISOString(),
-    end: new Date(dateKeyTimeToTimestamp(date, "23:59:59", activeTimezone) + 999).toISOString(),
+    start: dateKeyTimeToIsoInTimezone(date, "00:00:00", activeTimezone),
+    end: dateKeyTimeToIsoInTimezone(date, "23:59:59", activeTimezone),
     groups: [],
     items: events.map((event) => {
       const theme = categoryMap.get(event.subcategoryId) || categoryMap.get(event.categoryId) || resolveCategoryTheme(event.categoryId);
@@ -126,8 +127,8 @@ function buildWeekTimeline(weekRange, facts, categoryMap) {
   return {
     key: weekRange.key,
     label: weekRange.label,
-    start: `${anchorDate}T00:00:00.000+08:00`,
-    end: `${anchorDate}T23:59:59.999+08:00`,
+    start: dateKeyTimeToIsoInTimezone(anchorDate, "00:00:00", activeTimezone),
+    end: dateKeyTimeToIsoInTimezone(anchorDate, "23:59:59", activeTimezone),
     groups,
     items,
   };
@@ -393,8 +394,8 @@ function buildWeekRanges(dates) {
     .map(([startDate, groupedDates]) => ({
       key: startDate,
       label: activeLocale === "zh-CN" ? `${startDate} ${getTimelineText(activeLocale, "weekOf")}` : `${getTimelineText(activeLocale, "weekOf")} ${startDate}`,
-      start: `${startDate}T00:00:00.000+08:00`,
-      end: `${offsetDateInTimezone(startDate, 7, activeTimezone)}T00:00:00.000+08:00`,
+      start: dateKeyTimeToIsoInTimezone(startDate, "00:00:00", activeTimezone),
+      end: dateKeyTimeToIsoInTimezone(offsetDateInTimezone(startDate, 7, activeTimezone), "00:00:00", activeTimezone),
       dates: fillWeekDates(startDate, groupedDates),
     }));
 }

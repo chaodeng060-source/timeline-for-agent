@@ -44,7 +44,12 @@ function offsetDateInTimezone(date, dayDelta, timezone) {
 }
 
 function dateKeyTimeToTimestamp(date, time, timezone) {
-  return Date.parse(`${date}T${time}${offsetForTimezoneMidnight(date, resolveTimelineTimezone(timezone))}`);
+  return parseLocalDateTimeInTimezone(date, time, resolveTimelineTimezone(timezone));
+}
+
+function dateKeyTimeToIsoInTimezone(date, time, timezone) {
+  const resolvedTimezone = resolveTimelineTimezone(timezone);
+  return `${date}T${time}${offsetForTimezoneDateTime(date, time, resolvedTimezone)}`;
 }
 
 function getWeekStartInTimezone(date, timezone) {
@@ -81,20 +86,68 @@ function anchorClockRangeToReferenceDay(startAt, endAt, anchorDate, timezone) {
   const resolvedTimezone = resolveTimelineTimezone(timezone);
   const startClock = formatClockInTimezone(startAt, resolvedTimezone);
   const endClock = formatClockInTimezone(endAt, resolvedTimezone);
-  let anchoredStart = `${anchorDate}T${startClock}:00+08:00`;
-  let anchoredEnd = `${anchorDate}T${endClock}:00+08:00`;
+  let anchoredStart = dateKeyTimeToIsoInTimezone(anchorDate, `${startClock}:00`, resolvedTimezone);
+  let anchoredEnd = dateKeyTimeToIsoInTimezone(anchorDate, `${endClock}:00`, resolvedTimezone);
   if (Date.parse(anchoredEnd) <= Date.parse(anchoredStart)) {
-    anchoredEnd = `${offsetDateInTimezone(anchorDate, 1, resolvedTimezone)}T${endClock}:00+08:00`;
+    anchoredEnd = dateKeyTimeToIsoInTimezone(offsetDateInTimezone(anchorDate, 1, resolvedTimezone), `${endClock}:00`, resolvedTimezone);
   }
   return { start: anchoredStart, end: anchoredEnd };
 }
 
 function parseDateKeyInTimezone(date, timezone) {
-  return Date.parse(`${date}T00:00:00${offsetForTimezoneMidnight(date, resolveTimelineTimezone(timezone))}`);
+  return parseLocalDateTimeInTimezone(date, "00:00:00", resolveTimelineTimezone(timezone));
 }
 
 function offsetForTimezoneMidnight(date, timezone) {
-  const utcGuess = Date.parse(`${date}T00:00:00Z`);
+  return offsetForTimezoneDateTime(date, "00:00:00", timezone);
+}
+
+function offsetForTimezoneDateTime(date, time, timezone) {
+  const timestamp = parseLocalDateTimeInTimezone(date, time, timezone);
+  const parts = partsForTimestampInTimezone(timestamp, timezone);
+  const asUtc = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour),
+    Number(parts.minute),
+    Number(parts.second),
+  );
+  const offsetMinutes = Math.round((asUtc - timestamp) / 60000);
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const abs = Math.abs(offsetMinutes);
+  const hh = String(Math.floor(abs / 60)).padStart(2, "0");
+  const mm = String(abs % 60).padStart(2, "0");
+  return `${sign}${hh}:${mm}`;
+}
+
+function parseLocalDateTimeInTimezone(date, time, timezone) {
+  const [year, month, day] = date.split("-").map(Number);
+  const [hour, minute, second] = time.split(":").map(Number);
+  const targetUtc = Date.UTC(year, month - 1, day, hour, minute, second || 0);
+  let guess = targetUtc;
+
+  for (let index = 0; index < 4; index += 1) {
+    const parts = partsForTimestampInTimezone(guess, timezone);
+    const observedUtc = Date.UTC(
+      Number(parts.year),
+      Number(parts.month) - 1,
+      Number(parts.day),
+      Number(parts.hour),
+      Number(parts.minute),
+      Number(parts.second),
+    );
+    const diff = targetUtc - observedUtc;
+    if (diff === 0) {
+      return guess;
+    }
+    guess += diff;
+  }
+
+  return guess;
+}
+
+function partsForTimestampInTimezone(timestamp, timezone) {
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: timezone,
     year: "numeric",
@@ -105,21 +158,7 @@ function offsetForTimezoneMidnight(date, timezone) {
     second: "2-digit",
     hour12: false,
   });
-  const parts = Object.fromEntries(formatter.formatToParts(utcGuess).map((part) => [part.type, part.value]));
-  const asUtc = Date.UTC(
-    Number(parts.year),
-    Number(parts.month) - 1,
-    Number(parts.day),
-    Number(parts.hour),
-    Number(parts.minute),
-    Number(parts.second),
-  );
-  const offsetMinutes = Math.round((asUtc - utcGuess) / 60000);
-  const sign = offsetMinutes >= 0 ? "+" : "-";
-  const abs = Math.abs(offsetMinutes);
-  const hh = String(Math.floor(abs / 60)).padStart(2, "0");
-  const mm = String(abs % 60).padStart(2, "0");
-  return `${sign}${hh}:${mm}`;
+  return Object.fromEntries(formatter.formatToParts(timestamp).map((part) => [part.type, part.value]));
 }
 
 function formatPartsInTimezone(value, timezone, options, locale = "en-CA") {
@@ -131,6 +170,7 @@ function formatPartsInTimezone(value, timezone, options, locale = "en-CA") {
 
 module.exports = {
   anchorClockRangeToReferenceDay,
+  dateKeyTimeToIsoInTimezone,
   dateKeyTimeToTimestamp,
   formatClockInTimezone,
   formatDateInTimezone,
