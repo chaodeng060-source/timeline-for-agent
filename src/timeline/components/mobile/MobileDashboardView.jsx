@@ -188,6 +188,16 @@ function MobileTimelineView({ activeDayKey, days, locale, onSelectDay }) {
                       <div
                         key={item.id}
                         className={buildMobileDayEventClassName(item.height)}
+                        onClick={isActive ? (eventObject) => {
+                          eventObject.stopPropagation();
+                          setSelectedEvent({
+                            label: item.title,
+                            dateLabel: day.label,
+                            timeLabel: item.timeText,
+                            compactDuration: item.durationText,
+                            note: item.note,
+                          });
+                        } : undefined}
                         style={{
                           "--mobile-item-fill": item.color,
                           "--mobile-item-ink": item.ink,
@@ -196,16 +206,7 @@ function MobileTimelineView({ activeDayKey, days, locale, onSelectDay }) {
                         }}
                       >
                         {isActive ? (
-                          <div className="mobile-day-event-body" onClick={(eventObject) => {
-                            eventObject.stopPropagation();
-                            setSelectedEvent({
-                              label: item.title,
-                              dateLabel: day.label,
-                              timeLabel: item.timeText,
-                              compactDuration: item.durationText,
-                              note: item.note,
-                            });
-                          }}>
+                          <div className="mobile-day-event-body">
                             <div className="mobile-day-event-head">
                               <h2>{item.title}</h2>
                             </div>

@@ -430,6 +430,7 @@ input {
   background: color-mix(in oklch, var(--mobile-item-fill) 88%, white 12%);
   border: 1px solid color-mix(in oklch, var(--mobile-item-fill) 70%, var(--rule-soft));
   overflow: hidden;
+  cursor: pointer;
 }
 
 .mobile-day-column.compact .mobile-day-event {
